@@ -1,0 +1,14 @@
+#!/bin/sh -l
+cd /root/.jenkins/workspace/df-center/df-center-service
+mvn clean install
+cd /root/.jenkins/workspace/df-center/df-center-web
+mvn clean install
+project=/root/.jenkins/workspace/df-center/df-center-web/target/
+sid=`ps -ef | grep "df-center-web" | grep -v "grep" | awk '{print $2}'`
+if ps -ef | grep "df-center-web" | grep -v "grep"; then
+   kill -9 $sid
+fi
+cd $project
+cp df-center-web-1.0.jar /home
+cd /home 
+BUILD_ID=dontKillMe nohup java -Xms1024m -Xmx1024m -Xss512k -jar df-center-web-1.0.jar & 
